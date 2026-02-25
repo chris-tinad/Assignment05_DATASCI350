@@ -1,0 +1,165 @@
+---
+title: "Presentation-Assignment05"
+author: "Christina Dai"
+date: "2026-02-25"
+format: 
+    revealjs:
+        theme: sky
+        transition: fade
+        slide-number: true
+execute: 
+  echo: false
+---
+
+## WDI 2022 Exploratory Data Analysis
+Primary school enrollment • Life expectancy • Unemployment rate
+
+---
+
+### Conducting Exploratory Data Analysis
+
+In this report we will be focusing on the following 3 variables in order to better understand the global landscape in 2022:
+
+1.  **primary_school_enrolment_rate:** measures the percentage of children of official primary school age who are enrolled in primary education.
+
+2.  **life_expectancy:** is the average number of years someone is expected to live
+
+3.  **unemployment_rate:** measures the percentage of the total labor force that is without work but are able to work/ looking for work.
+
+---
+
+### Primary School Enrollment EDA
+
+```{python}
+#| label: primary_school_enrolment_rate_eda
+#| echo: false
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv("wdi.csv")
+
+prim_enrol = df['primary_school_enrolment_rate']
+
+prim_enrol_clean = prim_enrol.dropna()
+
+print("Mean:", prim_enrol_clean.mean())
+print("Median:", prim_enrol_clean.median())
+print("Standard Deviation:", prim_enrol_clean.std())
+
+```
+
+---
+
+### Life Expectancy EDA
+
+```{python}
+#| label: life_expectancy_eda
+#| echo: false
+
+life_exp = df['life_expectancy']
+
+life_exp_clean = life_exp.dropna()
+
+print("Mean:", life_exp_clean.mean())
+print("Median:", life_exp_clean.median())
+print("Standard Deviation:", life_exp_clean.std())
+
+```
+
+---
+
+### Unemployment Rate EDA
+
+```{python}
+#| label: unemployment_rate_eda
+#| echo: false
+
+unempl_rate = df['unemployment_rate']
+
+unempl_rate_clean = unempl_rate.dropna()
+
+print("Mean:", unempl_rate_clean.mean())
+print("Median:", unempl_rate_clean.median())
+print("Standard Deviation:", unempl_rate_clean.std())
+
+```
+
+---
+
+## Scatterplot (life expectancy vs unemployment rate)
+
+```{python}
+#| echo: false  
+#| label: fig-life-unemployment
+#| fig-cap: "Life expectancy vs. unemployment rate in 2022. Source: @worldbank_wdi_2022."
+
+import matplotlib.pyplot as plt
+
+d = df[['life_expectancy', 'unemployment_rate']].dropna()
+
+plt.figure()
+plt.scatter(d['unemployment_rate'], d['life_expectancy'])
+plt.title("Life Expectancy vs Unemployment Rate (2022)")
+plt.xlabel("Unemployment rate (%)")
+plt.ylabel("Life expectancy (years)")
+plt.show()
+```
+
+---
+
+## Histogram (primary school enrollment rate)
+
+```{python}
+#| echo: false
+#| label: fig-enrolment-hist
+#| fig-cap: "Primary school enrolment rate distribution (WDI 2022). Source: @worldbank_wdi_2022."
+
+d = df['primary_school_enrolment_rate'].dropna()
+
+plt.figure()
+plt.hist(d, bins=30)
+plt.title("Primary School Enrollment Rate (2022)")
+plt.xlabel("Primary school enrolment rate (%)")
+plt.ylabel("Number of Countries per Rate")
+plt.show()
+```
+
+---
+
+## Key Statistics
+
+```{python}
+#| echo: false
+#| label: tbl-key-stats
+#| tbl-cap: "Key summary statistics for selected indicators (WDI 2022). Source: @worldbank_wdi_2022."
+
+# Select variables and remove missing values
+d = df[['primary_school_enrolment_rate',
+        'life_expectancy',
+        'unemployment_rate']]
+
+summary = pd.DataFrame({
+    "Mean": d.mean(),
+    "Median": d.median(),
+    "Standard Deviation": d.std(),
+    "Minimum": d.min(),
+    "Maximum": d.max()
+})
+
+summary
+```
+
+---
+
+## Conclusion
+
+-   **Negative relationship:** As shown in \@fig-life-unemployment, higher unemployment is generally associated with lower life expectancy.
+
+-   **Supported by research:** Prior studies link long-term unemployment to reduced life expectancy and greater disability \[\@laditka_unemployment_disability_life_expectancy_2016; \@assari_employment_life_expectancy_2017\].
+
+-   **Enrollment pattern:** \@fig-enrolment-hist shows primary school enrollment rates are centered near 100%.
+
+-   **\>100% explained:** Rates above 100% occur because gross enrollment includes over- and under-aged students.
+
+-   **Indicator variation:** \@tbl-key-stats highlights differences in spread and central tendency across variables. 

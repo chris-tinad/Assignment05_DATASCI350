@@ -1,0 +1,142 @@
+---
+title: "Assignment 05"
+format: 
+        html: default
+        pdf: default
+author: "Christina Dai"
+date: "2026-02-25"
+---
+
+```{python}
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv("wdi.csv")
+```
+
+## Conducting Exploratory Data Analysis
+
+In this report we will be focusing on the following 3 variables in order to better understand the global landscape in 2022:
+
+1.  **primary_school_enrolment_rate:** measures the percentage of children of official primary school age who are enrolled in primary education.
+
+2.  **life_expectancy:** is the average number of years someone is expected to live
+
+3.  **unemployment_rate:** measures the percentage of the total labor force that is without work but are able to work/ looking for work.
+
+### Primary School Enrollment EDA
+
+```{python}
+#| label: primary_school_enrolment_rate_eda
+
+prim_enrol = df['primary_school_enrolment_rate']
+
+prim_enrol_clean = prim_enrol.dropna()
+
+print("Mean:", prim_enrol_clean.mean())
+print("Median:", prim_enrol_clean.median())
+print("Standard Deviation:", prim_enrol_clean.std())
+
+```
+
+The mean for primary school enrollment for 2022 was approximately 100.87% enrollment rate with a standard deviation of about 11.98%. The median is around 100% enrollment rate.
+
+### Life Expectancy EDA
+
+```{python}
+#| label: life_expectancy_eda
+
+life_exp = df['life_expectancy']
+
+life_exp_clean = life_exp.dropna()
+
+print("Mean:", life_exp_clean.mean())
+print("Median:", life_exp_clean.median())
+print("Standard Deviation:", life_exp_clean.std())
+
+```
+
+The mean for life expectancy for 2022 was approximately 72.42 years old with a standard deviation of about 7.71 years. The median is around 73.51 years old.
+
+### Unemployment Rate EDA
+
+```{python}
+#| label: unemployment_rate_eda
+
+unempl_rate = df['unemployment_rate']
+
+unempl_rate_clean = unempl_rate.dropna()
+
+print("Mean:", unempl_rate_clean.mean())
+print("Median:", unempl_rate_clean.median())
+print("Standard Deviation:", unempl_rate_clean.std())
+
+```
+
+The mean for unemployment rate for 2022 was approximately 7.27% with a standard deviation of about 5.83%. The median is around 5.54% unemployment rate.
+
+## Scatterplot (life expectancy vs unemployment rate)
+
+```{python}
+#| label: fig-life-unemployment
+#| fig-cap: "Life expectancy vs. unemployment rate in 2022. Source: @worldbank_wdi_2022."
+
+import matplotlib.pyplot as plt
+
+d = df[['life_expectancy', 'unemployment_rate']].dropna()
+
+plt.figure()
+plt.scatter(d['unemployment_rate'], d['life_expectancy'])
+plt.title("Life Expectancy vs Unemployment Rate (2022)")
+plt.xlabel("Unemployment rate (%)")
+plt.ylabel("Life expectancy (years)")
+plt.show()
+```
+
+## Histogram (primary school enrollment rate)
+
+```{python}
+#| label: fig-enrolment-hist
+#| fig-cap: "Primary school enrolment rate distribution (WDI 2022). Source: @worldbank_wdi_2022."
+
+d = df['primary_school_enrolment_rate'].dropna()
+
+plt.figure()
+plt.hist(d, bins=30)
+plt.title("Primary School Enrollment Rate (2022)")
+plt.xlabel("Primary school enrolment rate (%)")
+plt.ylabel("Number of Countries per Rate")
+plt.show()
+```
+
+## Key Statistics
+
+```{python}
+#| label: tbl-key-stats
+#| tbl-cap: "Key summary statistics for selected indicators (WDI 2022). Source: @worldbank_wdi_2022."
+
+# Select variables and remove missing values
+d = df[['primary_school_enrolment_rate',
+        'life_expectancy',
+        'unemployment_rate']]
+
+summary = pd.DataFrame({
+    "Mean": d.mean(),
+    "Median": d.median(),
+    "Standard Deviation": d.std(),
+    "Minimum": d.min(),
+    "Maximum": d.max()
+})
+
+summary
+```
+
+## Conclusion
+As shown in @fig-life-unemployment, there appears to be a negative association between unemployment rates and life expectancy in 2022. Countries with lower unemployment rates generally tend to exhibit higher life expectancy, suggesting that stronger labor markets may be associated with better overall life quality and life expectancy.
+
+Studies have shown that unemployment rates and other related socioeconomic factors are associated with mortality and life expectancy. For example, research shows that long-term unemployment correlates with reduced life expectancy and greater disability over time [@laditka_unemployment_disability_life_expectancy_2016], and the protective effect of employment on longevity varies by race, gender, and education [@assari_employment_life_expectancy_2017].
+
+@fig-enrolment-hist illustrates that the primary school enrollment rate distribution is approximately unimodal and centered around 100%. The distribution appears relatively concentrated near full enrollment, though several countries exhibit enrollment rates exceeding 100%. This is consistent with the use of a gross enrollment rate measure, which can exceed 100% due to the inclusion of over-aged or under-aged students enrolled in primary education.
+
+The key summary statistics are reported in @tbl-key-stats, which highlights variation across indicators. 
